@@ -28,15 +28,14 @@ func APIInfo(w *http.ResponseWriter, r *http.Request) {
 // uptime prints the app uptime in ISO 8601 duration format
 func uptime() string {
 	// Seconds duration since app start
-	duration := int(time.Since(appStartTime).Seconds())
+	duration := time.Since(appStartTime)
 
-	sec := duration % 60
-	min := duration / 60
-	hour := min / 60
-	day := hour / 24
-	week := day / 7
-	month := week / 4
-	year := month / 12
+	sec := int(duration.Seconds()) % 60
+	min := int(duration.Minutes()) % 60
+	hour := int(duration.Hours()) % 24
+	day := int(duration.Hours()/24) % 7
+	month := int(duration.Hours()/24/7/4) % 12
+	year := int(duration.Hours() / 24 / 365)
 
 	return fmt.Sprintf("P%dY%dM%dDT%dH%dM%dS", year, month, day, hour, min, sec)
 }
