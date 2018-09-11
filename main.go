@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/imt2681-assig1/igcinfo"
 )
 
 const rootPath = "igcinfo"
@@ -27,9 +29,10 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRoutes(w *http.ResponseWriter, r *http.Request, routes []string) {
-	// Base api route
+	// Base API route, send info about the API
 	if len(routes) == 0 {
-
+		igcinfo.APIInfo(w, r)
+		return
 	}
 }
 
