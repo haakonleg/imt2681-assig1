@@ -16,13 +16,13 @@ type apiInfo struct {
 }
 
 // APIInfo sends information about the API
-func APIInfo(w *http.ResponseWriter, r *http.Request) {
-	(*w).Header().Set("Content-Type", "application/json")
+func APIInfo(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
 	info := &apiInfo{uptime(), "Service for IGC tracks.", "v1"}
 	res, _ := json.Marshal(info)
 
-	fmt.Fprintf(*w, string(res))
+	fmt.Fprintf(w, string(res))
 }
 
 // uptime prints the app uptime in ISO 8601 duration format
