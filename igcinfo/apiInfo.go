@@ -25,7 +25,7 @@ func APIInfo(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(res))
 }
 
-// uptime prints the app uptime in ISO 8601 duration format
+// uptime returns the app uptime in ISO 8601 duration format
 func uptime() string {
 	// Seconds duration since app start
 	duration := time.Since(appStartTime)

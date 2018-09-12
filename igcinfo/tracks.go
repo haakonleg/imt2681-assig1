@@ -4,12 +4,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	igc "github.com/marni/goigc"
 )
 
 type registerTrackRequest struct {
 	URL string `json:"url"`
+}
+
+type getTrackResponse struct {
+	Hdate       string `json:"H_date"`
+	Pilot       string `json:"pilot"`
+	Glider      string `json:"glider"`
+	GliderID    string `json:"glider_id"`
+	TrackLength string `json:"track_length"`
 }
 
 // In-memory storage of all tracks
@@ -24,6 +33,11 @@ func RegisterTrack(w http.ResponseWriter, r *http.Request) {
 	err := ParseJSONRequest(r, &request)
 	if err != nil {
 		WriteError(w, "Invalid JSON", 400)
+		return
+	}
+
+	if len(request.URL) == 0 {
+		WriteError(w, "URL not provided", 400)
 		return
 	}
 
@@ -50,4 +64,59 @@ func GetAllTracks(w http.ResponseWriter, r *http.Request) {
 
 	res, _ := json.Marshal(ids)
 	fmt.Fprintln(w, string(res))
+}
+
+// GetTrackByID sends a response containing meta information about a registered track
+func GetTrackByID(w http.ResponseWriter, r *http.Request, id int) {
+	w.Header().Set("Content-Type", "application/json")
+
+	track, ok := trackDb[id]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+
+	trackInfo := &getTrackResponse{
+		track.Date.String(),
+		track.Pilot,
+		track.GliderType,
+		track.GliderID,
+		calTrackTime(&track.Points).String()}
+
+	res, _ := json.Marshal(trackInfo)
+	fmt.Fprintln(w, string(res))
+}
+
+func GetTrackField(w http.ResponseWriter, r *http.Request, id int, field string) {
+	w.Header().Set("Content-Type", "text/plain")
+
+	track, ok := trackDb[id]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+
+	switch field {
+	case "pilot":
+		fmt.Fprint(w, track.Pilot)
+	case "glider":
+		fmt.Fprint(w, track.GliderType)
+	case "glider_id":
+		fmt.Fprint(w, track.GliderID)
+	case "track_length":
+		fmt.Fprint(w, calTrackTime(&track.Points).String())
+	case "H_date":
+		fmt.Fprint(w, track.Date.String())
+	default:
+		http.NotFound(w, r)
+	}
+}
+
+func calTrackTime(points *[]igc.Point) time.Duration {
+	arrLen := len(*points)
+
+	firstTime := (*points)[0].Time
+	lastTime := (*points)[arrLen-1].Time
+
+	return lastTime.Sub(firstTime)
 }
