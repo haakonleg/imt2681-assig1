@@ -63,7 +63,7 @@ func GetAllTracks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res, _ := json.Marshal(ids)
-	fmt.Fprintln(w, string(res))
+	fmt.Fprint(w, string(res))
 }
 
 // GetTrackByID sends a response containing meta information about a registered track
@@ -84,9 +84,10 @@ func GetTrackByID(w http.ResponseWriter, r *http.Request, id int) {
 		calTrackTime(&track.Points).String()}
 
 	res, _ := json.Marshal(trackInfo)
-	fmt.Fprintln(w, string(res))
+	fmt.Fprint(w, string(res))
 }
 
+// GetTrackField sends a response containing a single field in a registered track
 func GetTrackField(w http.ResponseWriter, r *http.Request, id int, field string) {
 	w.Header().Set("Content-Type", "text/plain")
 
@@ -112,6 +113,7 @@ func GetTrackField(w http.ResponseWriter, r *http.Request, id int, field string)
 	}
 }
 
+// Calculate track length, time of last point subtracted by time of first
 func calTrackTime(points *[]igc.Point) time.Duration {
 	arrLen := len(*points)
 

@@ -22,7 +22,7 @@ func APIInfo(w http.ResponseWriter, r *http.Request) {
 	info := &apiInfo{uptime(), "Service for IGC tracks.", "v1"}
 	res, _ := json.Marshal(info)
 
-	fmt.Fprintf(w, string(res))
+	fmt.Fprint(w, string(res))
 }
 
 // uptime returns the app uptime in ISO 8601 duration format

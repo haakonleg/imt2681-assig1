@@ -34,5 +34,5 @@ func WriteError(w http.ResponseWriter, err string, statusCode int) {
 
 // WriteMessage writes a message in the HTTP response
 func WriteMessage(w http.ResponseWriter, msg string) {
-	fmt.Fprintln(w, "{\"msg\":\""+msg+"\"}")
+	fmt.Fprint(w, "{\"msg\":\""+msg+"\"}")
 }
