@@ -1,4 +1,4 @@
-package igcinfo
+package track
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/haakonleg/imt2681-assig1/request"
 	igc "github.com/marni/goigc"
 )
 
@@ -55,7 +56,7 @@ func ensureIGCLink(link string) bool {
 
 // GET /api/track
 // Returns an array of IDs of all tracks stored in the database
-func getAllTracks(req *Request, db *map[int]Track) {
+func GetAllTracks(req *request.Request, db *map[int]Track) {
 	// Get all track IDs in database
 	ids := make([]int, 0, len(*db))
 	for id := range *db {
@@ -67,7 +68,7 @@ func getAllTracks(req *Request, db *map[int]Track) {
 
 // POST /api/track
 // Register/upload a track
-func registerTrack(req *Request, db *map[int]Track) {
+func RegisterTrack(req *request.Request, db *map[int]Track) {
 	var request struct {
 		URL string `json:"url"`
 	}
@@ -105,7 +106,7 @@ func registerTrack(req *Request, db *map[int]Track) {
 
 // GET /api/track/{id}
 // Retrieves a track by the value of its ObjectID (hex encoded string)
-func getTrack(req *Request, db *map[int]Track, id int) {
+func GetTrack(req *request.Request, db *map[int]Track, id int) {
 	// Check if track is in the database
 	track, ok := (*db)[id]
 	if !ok {
@@ -118,7 +119,7 @@ func getTrack(req *Request, db *map[int]Track, id int) {
 
 // GET /api/track/{id}/{field}
 // Retrieves a field in the track object
-func getTrackField(req *Request, db *map[int]Track, id int, field string) {
+func GetTrackField(req *request.Request, db *map[int]Track, id int, field string) {
 	// Check if track is in the database
 	track, ok := (*db)[id]
 	if !ok {

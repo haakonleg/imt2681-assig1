@@ -8,6 +8,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/haakonleg/imt2681-assig1/request"
+	"github.com/haakonleg/imt2681-assig1/track"
+	"github.com/haakonleg/imt2681-assig1/apiinfo"
 )
 
 const apiPath = "/igcinfo/api/"
@@ -17,18 +21,18 @@ const apiPath = "/igcinfo/api/"
 type App struct {
 	ListenPort string
 
-	db        map[int]Track
+	db        map[int]track.Track
 	startTime time.Time
 }
 
 // Route the API request to handlers
 func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	req := createRequest(w, r, r.Method)
+	req := request.CreateRequest(w, r, r.Method)
 	path := strings.TrimPrefix(r.URL.Path, apiPath)
 
 	// GET /api
-	if len(path) == 0 && req.method == GET {
-		getAPIInfo(req, &app.startTime)
+	if len(path) == 0 && req.Method == request.GET {
+		apiinfo.GetAPIInfo(req, &app.startTime)
 		return
 	}
 
@@ -37,23 +41,23 @@ func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if match := reIGC.FindStringSubmatch(path); match != nil {
 		// Matches GET /api/igc and POST /api/igc
 		if len(match[1]) == 0 && len(match[2]) == 0 {
-			switch req.method {
-			case GET:
-				getAllTracks(req, &app.db)
-			case POST:
-				registerTrack(req, &app.db)
+			switch req.Method {
+			case request.GET:
+				track.GetAllTracks(req, &app.db)
+			case request.POST:
+				track.RegisterTrack(req, &app.db)
 			}
 			return
 			// Matches GET /api/igc/{id}
-		} else if len(match[1]) != 0 && len(match[2]) == 0 && req.method == GET {
+		} else if len(match[1]) != 0 && len(match[2]) == 0 && req.Method == request.GET {
 			// The id should always be a real int because of the regex, so can ignore error
 			id, _ := strconv.Atoi(match[1][1:])
-			getTrack(req, &app.db, id)
+			track.GetTrack(req, &app.db, id)
 			return
 			// Matches GET /api/igc/{id}/{field}
-		} else if len(match[1]) != 0 && len(match[2]) != 0 && req.method == GET {
+		} else if len(match[1]) != 0 && len(match[2]) != 0 && req.Method == request.GET {
 			id, _ := strconv.Atoi(match[1][1:])
-			getTrackField(req, &app.db, id, match[2][1:])
+			track.GetTrackField(req, &app.db, id, match[2][1:])
 			return
 		}
 	}
@@ -61,6 +65,7 @@ func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
 }
 
+// StartServer starts the API HTTP server
 func (app *App) StartServer() {
 	app.startTime = time.Now()
 

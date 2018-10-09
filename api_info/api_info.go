@@ -1,13 +1,15 @@
-package igcinfo
+package apiinfo
 
 import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/haakonleg/imt2681-assig1/request"
 )
 
-// Send API info
-func getAPIInfo(req *Request, startTime *time.Time) {
+// GetAPIInfo send information about the API
+func GetAPIInfo(req *request.Request, startTime *time.Time) {
 	response := struct {
 		Uptime  string `json:"uptime"`
 		Info    string `json:"info"`

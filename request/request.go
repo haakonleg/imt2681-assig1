@@ -1,4 +1,4 @@
-package igcinfo
+package request
 
 import (
 	"encoding/json"
@@ -20,24 +20,27 @@ const (
 	DELETE
 )
 
-// Request contains the context of the HTTP request, it also has some helper methods
+// Request contains the context of the HTTP request, it provides some helper methods
+// such as sending a JSON response, errors, and parsing JSON requests
 type Request struct {
-	w      http.ResponseWriter
-	r      *http.Request
-	method Method
+	Method Method
+
+	w http.ResponseWriter
+	r *http.Request
 }
 
-func createRequest(w http.ResponseWriter, r *http.Request, method string) *Request {
+// CreateRequest creates a new Request object
+func CreateRequest(w http.ResponseWriter, r *http.Request, method string) *Request {
 	var req Request
 	req.w = w
 	req.r = r
-	switch method {
+	switch r.Method {
 	case "GET":
-		req.method = GET
+		req.Method = GET
 	case "POST":
-		req.method = POST
+		req.Method = POST
 	case "DELETE":
-		req.method = DELETE
+		req.Method = DELETE
 	}
 	return &req
 }
