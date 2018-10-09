@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/haakonleg/imt2681-assig1/apiinfo"
 	"github.com/haakonleg/imt2681-assig1/request"
 	"github.com/haakonleg/imt2681-assig1/track"
-	"github.com/haakonleg/imt2681-assig1/apiinfo"
 )
 
 const apiPath = "/igcinfo/api/"
@@ -73,7 +73,7 @@ func (app *App) StartServer() {
 		log.Fatal("ListenPort must be set")
 	}
 
-	app.db = make(map[int]Track, 0)
+	app.db = make(map[int]track.Track, 0)
 
 	// Add HTTP handler
 	http.Handle(apiPath, app)
