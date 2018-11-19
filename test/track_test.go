@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/haakonleg/imt2681-assig1/igcinfo"
+	"github.com/haakonleg/imt2681-assig1/track"
 )
 
 const listenPort = "8080"
@@ -78,13 +79,13 @@ func TestGetTracks(t *testing.T) {
 func TestGetTrack(t *testing.T) {
 	fmt.Println("Running test TestGetTrack")
 
-	var response igcinfo.Track
+	var response track.Track
 
 	if err := sendGetRequest("/api/igc/1", &response, true); err != nil {
 		t.Fatalf(err.Error())
 	}
 
-	expect := igcinfo.Track{
+	expect := track.Track{
 		HDate:       "2016-02-19 00:00:00 +0000 UTC",
 		Pilot:       "Miguel Angel Gordillo",
 		Glider:      "RV8",
